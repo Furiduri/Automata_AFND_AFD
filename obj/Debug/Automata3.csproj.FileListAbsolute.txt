@@ -1,0 +1,15 @@
+C:\Users\furid\source\repos\Automata3\bin\Debug\Automata3.exe.config
+C:\Users\furid\source\repos\Automata3\bin\Debug\Automata3.exe
+C:\Users\furid\source\repos\Automata3\bin\Debug\Automata3.pdb
+C:\Users\furid\source\repos\Automata3\obj\Debug\Automata3.csprojAssemblyReference.cache
+C:\Users\furid\source\repos\Automata3\obj\Debug\MainWindow.g.cs
+C:\Users\furid\source\repos\Automata3\obj\Debug\App.g.cs
+C:\Users\furid\source\repos\Automata3\obj\Debug\Automata3_MarkupCompile.cache
+C:\Users\furid\source\repos\Automata3\obj\Debug\Automata3_MarkupCompile.lref
+C:\Users\furid\source\repos\Automata3\obj\Debug\MainWindow.baml
+C:\Users\furid\source\repos\Automata3\obj\Debug\Automata3.g.resources
+C:\Users\furid\source\repos\Automata3\obj\Debug\Automata3.Properties.Resources.resources
+C:\Users\furid\source\repos\Automata3\obj\Debug\Automata3.csproj.GenerateResource.cache
+C:\Users\furid\source\repos\Automata3\obj\Debug\Automata3.csproj.CoreCompileInputs.cache
+C:\Users\furid\source\repos\Automata3\obj\Debug\Automata3.exe
+C:\Users\furid\source\repos\Automata3\obj\Debug\Automata3.pdb
