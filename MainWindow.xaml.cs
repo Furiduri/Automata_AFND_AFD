@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -19,11 +20,10 @@ namespace Automata3
     /// Lógica de interacción para MainWindow.xaml
     /// </summary>
     public partial class MainWindow : Window
-    {        
+    {
         public MainWindow()
         {
             InitializeComponent();
-            txtNumEst.MaxLength = 1;
         }
 
         private void TxtNumEst_KeyDown(object sender, KeyEventArgs e)
@@ -36,44 +36,63 @@ namespace Automata3
 
         private void BtnStep1_Click(object sender, RoutedEventArgs e)
         {
+
+            if (String.IsNullOrWhiteSpace(txtNumCase.Text) || String.IsNullOrWhiteSpace(txtNumEst.Text))
+                MessageBox.Show("Alerta: Favor de llenar los dos campos", "Alerta");
+            else
+                fnGenerateAFNDA();
+            
+        }
+
+        private void fnGenerateAFNDA()
+        {
             try
-            {            
+            {
+                gridAdd.Visibility = Visibility.Visible;
                 txtNumEst.IsEnabled = false;
                 txtNumCase.IsEnabled = false;
                 btnStep1.Click -= new RoutedEventHandler(BtnStep1_Click);
                 btnStep1.Click += new RoutedEventHandler(BtnStep2_Click);
+                btnStep1.Content = "Generar AFD";
+                DataTable DT = new DataTable("AFND");
                 //Se imprimen los estados
                 lblStados.Visibility = Visibility.Visible;
                 lblStados.Content = "Estados: ";
-                ListBox comboBox1 = (ListBox)gridAdd.Children[1];
-                List<Estado> items = new List<Estado>();
+                cmbInit.Items.Clear();
+                cmbEnd.Items.Clear();
+                DT.Columns.Add("Estados");
                 for (int i = 0; i < Convert.ToInt32(txtNumEst.Text); i++)
                 {
-                    lblStados.Content += "[" + char.ConvertFromUtf32(65+i) + "]  ";
-                    items.Add(new Estado(Convert.ToString(65 + i), i));
+                    lblStados.Content += "[" + char.ConvertFromUtf32(65 + i) + "]  ";
+                    ComboBoxItem Itemcmb = new ComboBoxItem();
+                    Itemcmb.Content = char.ConvertFromUtf32(65 + i);
+                    Itemcmb.ToolTip = i.ToString();
+                    Itemcmb.Name = "Item" + char.ConvertFromUtf32(65 + i);
+                    cmbInit.Items.Add(Itemcmb);
+                    Itemcmb = new ComboBoxItem();
+                    Itemcmb.Content = char.ConvertFromUtf32(65 + i);
+                    Itemcmb.ToolTip = i.ToString();
+                    Itemcmb.Name = "Item" + char.ConvertFromUtf32(65 + i);
+                    cmbEnd.Items.Add(Itemcmb);
+                    DT.Rows.Add();
+                    DT.Rows[i][0] = char.ConvertFromUtf32(65 + i);
                 }
-                comboBox1.ItemsSource = items;
-                //Se generan las opciones
-                for (int cont = 0; cont < Convert.ToInt32(txtNumCase.Text); cont++)
-                {                   
-                    // TxtBox in grid
-                    TextBox txt1 = new TextBox();
-                    Label lbl = new Label();
-                    PanelCase.Children.Add(lbl);
-                    PanelCase.Children.Add(txt1);
-                    ///Label
-                    lbl.Name = "Case" + cont;
-                    lbl.Content = "Valor " + cont + ":";
-                    lbl.HorizontalAlignment = HorizontalAlignment.Left;
-                    lbl.VerticalAlignment = VerticalAlignment.Top;
-                    ///Textbox
-                    txt1.Name = "txtCase"+cont;
-                    txt1.Text = "";
-                    txt1.Width = 50;                
-                    txt1.Height = 30;
-                    txt1.HorizontalAlignment = HorizontalAlignment.Left;
-                    txt1.VerticalAlignment = VerticalAlignment.Top;
+                //Se imprimen los casos
+                lblStados.Content += "\nCasos: ";
+                cmbCase.Items.Clear();
+                for (int i = 0; i < Convert.ToInt32(txtNumCase.Text); i++)
+                {
+                    lblStados.Content += "[" + i + "]  ";
+                    ComboBoxItem Itemcmb = new ComboBoxItem();
+                    Itemcmb.Content = i.ToString();
+                    Itemcmb.ToolTip = i.ToString();
+                    Itemcmb.Name = "Item" + i;
+                    cmbCase.Items.Add(Itemcmb);
+                    DT.Columns.Add("Caso: " + i);
                 }
+                lblAFNDA.Visibility = Visibility.Visible;
+                GridAFNDA.Visibility = Visibility.Visible;
+                GridAFNDA.DataContext = DT.DefaultView;
             }
             catch (Exception error)
             {
@@ -85,17 +104,7 @@ namespace Automata3
         {
             try
             {
-
-                //Boqueamos los parametros
-                for (int i = 1; i < PanelCase.Children.Count; i+=2)
-                {
-                    try
-                    {
-                        TextBox txt = (TextBox)PanelCase.Children[(i)];
-                        txt.IsEnabled = false;
-                    }
-                    catch { }
-                }
+                
 
             }
             catch (Exception error)
@@ -107,12 +116,43 @@ namespace Automata3
 
             private void BtnClear_Click(object sender, RoutedEventArgs e)
         {
-            PanelCase.Children.Clear();
+            gridAdd.Visibility = Visibility.Hidden;
+            lblStados.Visibility = Visibility.Hidden;
+            lblAFNDA.Visibility = Visibility.Hidden;
+            GridAFNDA.Visibility = Visibility.Hidden;
+            lblAFDA.Visibility = Visibility.Hidden;
+            GridAFDA.Visibility = Visibility.Hidden;
+            
+            cmbInit.Items.Clear();
+            cmbEnd.Items.Clear();
             txtNumEst.IsEnabled = true;
             txtNumEst.Text = "";
             txtNumCase.IsEnabled = true;
             txtNumCase.Text = "";
+            btnStep1.Content = "Siguiente";
             btnStep1.Click += new RoutedEventHandler(BtnStep1_Click);
+        }
+
+        private void BtnAddParam_Click(object sender, RoutedEventArgs e)
+        {
+            if (cmbInit.SelectedIndex >= 0  && cmbCase.SelectedIndex >= 0 && cmbEnd.SelectedIndex >=0)
+            {
+                DataRowView view = (DataRowView)GridAFNDA.SelectedItem;
+            }
+            else
+            {
+                MessageBox.Show("Alerta: Favor de selecionar los tres campos","Alerta");
+            }            
+        }
+
+        private void CmbInit_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            GridAFNDA.SelectedIndex = cmbInit.SelectedIndex;
+        }
+
+        private void GridAFNDA_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            cmbInit.SelectedIndex = GridAFNDA.SelectedIndex;
         }
     }    
 }
