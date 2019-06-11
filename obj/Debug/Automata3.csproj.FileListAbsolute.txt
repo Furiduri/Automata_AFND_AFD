@@ -32,3 +32,7 @@ C:\Users\furid\source\repos\Automata3\bin\Debug\Automata3.exe.manifest
 C:\Users\furid\source\repos\Automata3\bin\Debug\Automata3.application
 C:\Users\furid\source\repos\Automata3\obj\Debug\Automata3.exe.manifest
 C:\Users\furid\source\repos\Automata3\obj\Debug\Automata3.application
+C:\Users\2212878\GIT\Automata_AFND_AFD\bin\Debug\Automata3.exe.manifest
+C:\Users\2212878\GIT\Automata_AFND_AFD\bin\Debug\Automata3.application
+C:\Users\2212878\GIT\Automata_AFND_AFD\obj\Debug\Automata3.exe.manifest
+C:\Users\2212878\GIT\Automata_AFND_AFD\obj\Debug\Automata3.application

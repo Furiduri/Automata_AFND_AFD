@@ -17,18 +17,16 @@ namespace Automata3
     {
         private int NumRow;
         private DataTable DT;
+        private List<Transicion> ListAFDA;
         public MainWindow()
         {
             InitializeComponent();
             Label CopyRef = new Label();
             CopyRef.Content = "Creado por Jorge Perez, Mexico 2019, Github: https://github.com/Furiduri";
-            CopyRef.HorizontalContentAlignment = HorizontalAlignment.Right;
-            CopyRef.VerticalContentAlignment = VerticalAlignment.Bottom;
-            CopyRef.Height = 30;
-            CopyRef.Foreground = Brushes.GhostWhite;
-            CopyRef.Background = Brushes.LightGray;
             FooterGrid.Children.Add(CopyRef);
             NumRow = 0;
+            DT = null;
+            ListAFDA = null;
             txtNumEst.Focus();
         }
 
@@ -105,7 +103,7 @@ namespace Automata3
                     DT.Rows[i][0] = char.ConvertFromUtf32(65 + i);
                 }
                 //Se imprimen los casos
-                lblStados.Content += "\nCasos: ";
+                lblStados.Content += "\tCasos: ";
                 cmbCase.Items.Clear();
                 for (int i = 0; i < Convert.ToInt32(txtNumCase.Text); i++)
                 {
@@ -133,9 +131,17 @@ namespace Automata3
             try
             {
                 GenerarAFDA();
-                GridAFDA.DataContext = DT.DefaultView;
-                lblAFDA.Visibility = Visibility.Visible;
-                GridAFDA.Visibility = Visibility.Visible;
+                if (DT.Rows.Count > 0) {
+                    GridAFDA.DataContext = DT.DefaultView;
+                    lblAFDA.Visibility = Visibility.Visible;
+                    GridAFDA.Visibility = Visibility.Visible;
+                    MessageBox.Show("AFD Generado");
+                }
+                else
+                {
+                    lblAFDA.Visibility = Visibility.Hidden;
+                    GridAFDA.Visibility = Visibility.Hidden;
+                }
             }
             catch (Exception error)
             {
@@ -154,6 +160,7 @@ namespace Automata3
             {
                 DT = new DataTable("AFDA");
                 NumRow = 0;
+                ListAFDA = new List<Transicion>();
                 //Columnas
                 DT.Columns.Add("Estados");
                 for (int i = 0; i < Convert.ToInt32(txtNumCase.Text); i++)
@@ -161,7 +168,7 @@ namespace Automata3
                     DT.Columns.Add("Caso: " + i);
                 }
                 //Mapear estados del AFNDA
-                int FlagStart = 0;
+                int FlagStart = -1;
                 List<Entidades.Transicion> transicions = new List<Entidades.Transicion>();
                 foreach (DataRowView row in GridAFNDA.Items)
                 {
@@ -202,9 +209,13 @@ namespace Automata3
                     transicions.Add(transicion);
                 }
                 //Se guarda el estado incial y se setean las variables de estado terminal
-                List<Transicion> transicionsAFDA = new List<Transicion>();
-                transicionsAFDA.Add(transicions[FlagStart]);
-                GenerarAFDALoop(transicions, transicionsAFDA);
+                if (FlagStart == -1)
+                    MessageBox.Show("Error: No existe estado inical valido!", "Error");
+                else
+                {
+                    ListAFDA.Add(transicions[FlagStart]);
+                    GenerarAFDALoop(transicions);
+                }
             }
             catch (Exception Error)
             {
@@ -212,7 +223,7 @@ namespace Automata3
             }
         }
 
-        private void GenerarAFDALoop(List<Transicion> ListAFDNA, List<Transicion> ListAFDA)
+        private void GenerarAFDALoop(List<Transicion> ListAFDNA)
         {
             //Guardamos el row actual
             DT.Rows.Add();
@@ -221,6 +232,7 @@ namespace Automata3
             if (ListAFDA[localRow].flagStart)
             {
                 DT.Rows[localRow][0] = "->" + string.Join(",", ListAFDA[localRow].EstIncio);
+                
             }
             else if (ListAFDA[localRow].flagTerminal)
             {
@@ -233,21 +245,62 @@ namespace Automata3
             //Se guardan los casos en la tabla            
             foreach (Caso caso in ListAFDA[localRow].casos)
             {
-                DT.Rows[localRow][caso.CasoN + 1] = string.Join(",", caso.EstFin);
-                if (caso.newEst)
+                string estFin = string.Join(",", caso.EstFin);
+                DT.Rows[localRow][caso.CasoN + 1] = estFin;
+
+                if (caso.newEst && !string.IsNullOrEmpty(estFin))
                 {
-                    ListAFDA = GenerarNuevoEstado(ListAFDA, caso.EstFin, ListAFDNA);
+                    if (localRow > Convert.ToInt32(txtNumEst.Text))
+                    {
+                        string ante = DT.Rows[localRow - 1][caso.CasoN + 1].ToString();
+                        if (IsNotBucle(estFin, ante))
+                            GenerarNuevoEstado(ListAFDNA, caso.EstFin);
+                        else
+                        {
+                            MessageBox.Show("Error: Se genero un buble...", "ERROR");
+                            NumRow = 0;
+                            ListAFDA.Clear();
+                            DT.Clear();
+                            GridAFDA.DataContext = DT.DefaultView;
+                            break;
+                        }
+                    } else
+                        GenerarNuevoEstado(ListAFDNA, caso.EstFin);
+
                 }
             }
 
         }
 
-        private List<Transicion> GenerarNuevoEstado(List<Transicion> listAFDA, string[] estFin, List<Transicion> listAFDNA)
+        private bool IsNotBucle(string actual, string pasado)
+        {
+            bool flag = false;
+            int cont = 0;
+            if (pasado.Length == actual.Length - 1 || pasado.Length == actual.Length - 2)
+            {
+                foreach (char c in pasado)
+                {
+                    if (c != actual[cont])
+                        flag = true;
+                    cont++;
+                }
+            if (pasado.IndexOf(actual[actual.Length - 1]) < 0)
+                flag = true;
+
+            }
+            else
+            {
+                flag = true;
+            }
+            return flag;
+        }
+
+        private void GenerarNuevoEstado(List<Transicion> listAFNDA, string[] estFin)
         {
             //Verifico si el estado existe
             bool flagExist = false;
             string estadoNuevo = string.Join(",", estFin);
-            foreach (Transicion itmen in listAFDA)
+            foreach (Transicion itmen in ListAFDA)
             {
                 string estadoAct = string.Join(",", itmen.EstIncio);
                 if (estadoAct == estadoNuevo)
@@ -257,7 +310,7 @@ namespace Automata3
                 }
             }
             if (flagExist)
-                return listAFDA;
+                return;
             //Se comienzan a generar los nuevos estados si es que estos existen
             if (estFin.Length > 0)
             {
@@ -271,7 +324,7 @@ namespace Automata3
                 foreach (string estado in estFin)
                 {
                     //Obtengo la transicion del estado
-                    Transicion transEstado = listAFDNA.Find(x => x.EstIncio.Contains(estado));
+                    Transicion transEstado = listAFNDA.Find(x => x.EstIncio.Contains(estado));
                     if (transEstado.flagTerminal)
                         transicion.flagTerminal = true;
                     transNew.Add(transEstado);
@@ -282,19 +335,20 @@ namespace Automata3
                 {
                     Caso caso = new Caso();
                     caso.CasoN = i;
-                    string stfinal = null;
+                    string stfinal = "";
                     for (int c = 0; c < transNew.Count; c++)
                     {
-                        if (c == 0)
-                            stfinal += string.Join(",", transNew[c].casos[i].EstFin);
-                        else if (!string.IsNullOrEmpty(string.Join(",", transNew[c].casos[i].EstFin)))
-                            stfinal += "," + string.Join(",", transNew[c].casos[i].EstFin);
+                        string estaFin = string.Join(",", transNew[c].casos[i].EstFin);
+                        if (string.IsNullOrEmpty(stfinal) && !string.IsNullOrEmpty(estaFin))
+                            stfinal += estaFin;
+                        else if (!string.IsNullOrEmpty(estaFin))
+                            stfinal += "," + estaFin;
                     }
                     caso.EstFin = stfinal.Split(',');
                     //Verifico si el estado existe
                     flagExist = false;
                     estadoNuevo = stfinal;
-                    foreach (Transicion itmen in listAFDA)
+                    foreach (Transicion itmen in ListAFDA)
                     {
                         string estadoAct = string.Join(",", itmen.EstIncio);
                         if (estadoAct == estadoNuevo)
@@ -310,11 +364,11 @@ namespace Automata3
                     newCasos.Add(caso);
                 }
                 transicion.casos = newCasos;
-                listAFDA.Add(transicion);
+                ListAFDA.Add(transicion);
                 NumRow++;
-                GenerarAFDALoop(listAFDNA, listAFDA);
+                GenerarAFDALoop(listAFNDA);
             }
-            return listAFDA;
+            return;
         }
 
         /// <summary>
@@ -322,23 +376,9 @@ namespace Automata3
         /// </summary>
         private void BtnClear_Click(object sender, RoutedEventArgs e)
         {
-            gridAdd.Visibility = Visibility.Hidden;
-            lblStados.Visibility = Visibility.Hidden;
-            lblAFNDA.Visibility = Visibility.Hidden;
-            GridAFNDA.Visibility = Visibility.Hidden;
-            lblAFDA.Visibility = Visibility.Hidden;
-            GridAFDA.Visibility = Visibility.Hidden;
-
-            cmbInit.Items.Clear();
-            cmbEnd.Items.Clear();
-            txtNumEst.IsEnabled = true;
-            txtNumEst.Text = "";
-            txtNumCase.IsEnabled = true;
-            txtNumCase.Text = "";
-            btnStep1.Content = "Siguiente";
-            btnStep1.Click -= new RoutedEventHandler(BtnStep2_Click);
-            btnStep1.Click += new RoutedEventHandler(BtnStep1_Click);
-            txtNumEst.Focus();
+            
+            System.Diagnostics.Process.Start(Application.ResourceAssembly.Location);
+            Application.Current.Shutdown();
         }
 
         /// <summary>
@@ -400,11 +440,30 @@ namespace Automata3
                 if (sender != btnEmpiParam)
                 {
                     int collum = GridAFNDA.CurrentCell.Column.DisplayIndex;
-                    cmbCase.SelectedIndex = collum == 0 ? (default) : collum - 1;
+                    cmbCase.SelectedIndex = collum - 1;
                 }
             }
             catch (Exception)
             {
+            }
+        }
+
+        private void GridAFDA_LoadingRow(object sender, DataGridRowEventArgs e)
+        {
+            DataRowView item = e.Row.Item as DataRowView;
+            if (item != null)
+            {//Obtienes la fila
+                DataRow row = item.Row;
+                //Inspeccionas el row por el campo para validar el valor
+                if (row[0].ToString().IndexOf('>') >= 0)
+                {//Cambias el color
+                    e.Row.Background = new SolidColorBrush(Colors.LightGreen);
+                }
+                else if (row[0].ToString().IndexOf('*') >= 0)
+                {                    
+                    //Cambias el color
+                    e.Row.Background = new SolidColorBrush(Colors.LightSalmon);
+                }
             }
         }
     }

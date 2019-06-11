@@ -5,30 +5,35 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Automata3"
         xmlns:Controls="http://schemas.microsoft.com/netfx/2007/xaml/presentation"
+        Background="Black"
         mc:Ignorable="d" Icon="ic_icon.png"
-        Title="De AFNDA a AFDA" Height="700" Width="800" Background="LightGreen" ShowInTaskbar="True" Margin="50,0,50,0">
-    <Grid TextElement.FontSize="15" x:Name="MainGrid">
+        Title="De AFND a AFD"  Width="800" ShowInTaskbar="True" Margin="50,0,50,0">
+    <Grid TextElement.FontSize="15" TextElement.Foreground="White" x:Name="MainGrid">
         <Image HorizontalAlignment="Center" Panel.ZIndex="0" Margin="20,20,20,20" VerticalAlignment="Center" Source="Gcatcode-Baner.png" />
 
-        <Label Content="Numero de Estados"  HorizontalAlignment="Left" Margin="23,16,0,0" VerticalAlignment="Top"/>
+        <Label Content="Numero de Estados" Foreground="White"  HorizontalAlignment="Left" Margin="23,16,0,0" VerticalAlignment="Top"/>
 
-        <TextBox x:Name="txtNumEst" HorizontalAlignment="Left" Height="30" Margin="168,16,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="30"
-                 KeyDown="TxtNumEst_KeyDown" KeyUp="TxtNumCase_KeyUp" TabIndex="1" MaxLength="1" AcceptsTab="False"/>
+        <TextBox x:Name="txtNumEst"  HorizontalAlignment="Left" Height="30" Margin="168,16,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="30"
+                 KeyDown="TxtNumEst_KeyDown" KeyUp="TxtNumCase_KeyUp" Foreground="White" Background="#FF424249" FontSize="20" 
+                 TabIndex="1" MaxLength="1" AcceptsTab="False"/>
 
-        <Label Content="Numero de casos"  HorizontalAlignment="Left" Margin="242,16,0,0" VerticalAlignment="Top"/>
+        <Label Content="Numero de casos" Foreground="White" HorizontalAlignment="Left" Margin="242,16,0,0" VerticalAlignment="Top"/>
 
         <TextBox x:Name="txtNumCase" HorizontalAlignment="Left" Height="30" Margin="387,16,0,0" TextWrapping="Wrap" Text="" VerticalAlignment="Top" Width="30"
-            KeyDown="TxtNumEst_KeyDown" KeyUp="TxtNumCase_KeyUp" MaxLength="1" TabIndex="2" AcceptsTab="False"/>
+            KeyDown="TxtNumEst_KeyDown" KeyUp="TxtNumCase_KeyUp" Foreground="White" FontSize="20" Background="#FF424249"
+                 MaxLength="1" TabIndex="2" AcceptsTab="False"/>
 
-        <Button x:Name="btnStep1" TabIndex="3" Click="BtnStep1_Click" Content="Siguiente" HorizontalAlignment="Left" Margin="444,16,0,0" VerticalAlignment="Top" Width="160" Height="30" Background="#FF424249" Foreground="White"/>
+        <Button x:Name="btnStep1" TabIndex="3" Click="BtnStep1_Click" Content="Siguiente" HorizontalAlignment="Left" Margin="444,14,0,0" VerticalAlignment="Top" Width="160" Height="35" Background="#FF424249" Foreground="White"/>
 
-        <Button x:Name="btnClear" Click="BtnClear_Click" Content="Nuevo" HorizontalAlignment="Left" Margin="696,16,0,0" VerticalAlignment="Top" Width="76" Height="30" Background="#FF424249" Foreground="White"/>
-        <Label x:Name="lblStados" Visibility="Hidden" Content="" HorizontalAlignment="Left" Margin="10,46,0,0" VerticalAlignment="Top"/>
+        <Button x:Name="btnClear" Click="BtnClear_Click" Content="Nuevo" HorizontalAlignment="Left" Margin="696,14,0,0" VerticalAlignment="Top" Width="76" Height="35" Background="#FF424249" Foreground="White"/>
+        
+        <Label x:Name="lblStados" Foreground="WhiteSmoke" Visibility="Hidden" Content="" HorizontalAlignment="Center" Margin="10,60,0,0" VerticalAlignment="Top"/>
+        
         <Grid x:Name="gridAdd" HorizontalAlignment="Left" Height="60" Margin="23,94,0,0" VerticalAlignment="Top" Width="749" Background="Gray" Visibility="Hidden">
             <Label Content="Inico" HorizontalAlignment="Left" Margin="21,15,0,5" FontSize="18" Foreground="White"/>
             <ComboBox SelectionChanged="CmbInit_SelectionChanged" Name="cmbInit" TabIndex="0" Width="100" Height="35" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="74,15,0,0">
             </ComboBox>
-            <Label Content="Caso" HorizontalAlignment="Left" Margin="193,15,0,5" FontSize="18" Foreground="White"/>
+            <Label Content="Caso"  HorizontalAlignment="Left" Margin="193,15,0,5" FontSize="18" Foreground="White"/>
             <ComboBox Name="cmbCase" TabIndex="4" Width="100" Height="35" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="246,15,0,0">
             </ComboBox>
             <Label Content="Destino" HorizontalAlignment="Left" Margin="368,15,0,5" FontSize="18" Foreground="White"/>
@@ -39,14 +44,21 @@
         </Grid>
 
 
-        <Label Name="lblAFNDA" Content="Tabla FNDA" FontSize="20" HorizontalAlignment="Left" Margin="23,170,0,0" VerticalAlignment="Top" Visibility="Hidden"/>
+        <Label Name="lblAFNDA" Foreground="WhiteSmoke" Content="Tabla AFND" FontSize="20" HorizontalAlignment="Center" Margin="23,170,0,0" VerticalAlignment="Top" Visibility="Hidden"/>
         <DataGrid Name="GridAFNDA" MouseDoubleClick="GridAFNDA_CurrentCellChanged" SelectedCellsChanged="GridAFNDA_SelectedCellsChanged"
-                  IsReadOnly="True" HorizontalAlignment="Left" Height="200" Margin="23,200,0,0" VerticalAlignment="Top"  Background="#FFB0AEAE" Foreground="DarkGray" BorderBrush="#FF3E3E3E" ItemsSource="{Binding}" Visibility="Hidden"/>
+                  IsReadOnly="True" HorizontalAlignment="Center" MaxHeight="200" Margin="23,200,0,0" VerticalAlignment="Top"  
+                  Background="DarkGray"  Foreground="Black" BorderBrush="White" FontWeight="Medium" ItemsSource="{Binding}" 
+                  AlternationCount="0" AlternatingRowBackground="LightGray"
+                  Visibility="Hidden"/>
 
-        <Label Name="lblAFDA" Content="Tabla FNDA" FontSize="20" HorizontalAlignment="Left" Margin="23,410,0,0" VerticalAlignment="Top" Visibility="Hidden"/>
-        <DataGrid x:Name="GridAFDA" IsReadOnly="True" HorizontalAlignment="Left" Height="200" Margin="23,440,0,0" VerticalAlignment="Top" Background="#FFB0AEAE" Foreground="DarkGray" BorderBrush="#FF3E3E3E" ItemsSource="{Binding}" Visibility="Hidden"/>
+        <Label Name="lblAFDA" Foreground="WhiteSmoke" Content="Tabla AFND" FontSize="20" HorizontalAlignment="Center" Margin="23,400,0,0" VerticalAlignment="Top" Visibility="Hidden"/>
+        <DataGrid x:Name="GridAFDA" IsReadOnly="True" LoadingRow="GridAFDA_LoadingRow"
+                  HorizontalAlignment="Center" MaxHeight="200" Margin="23,430,0,0" 
+                  VerticalAlignment="Top" Foreground="Black" FontWeight="Medium"
+                  AlternationCount="2" AlternatingRowBackground="LightGray"
+                  BorderBrush="White" ItemsSource="{Binding}" Visibility="Hidden"/>
 
 
-        <Grid x:Name="FooterGrid" HorizontalAlignment="Right" TextElement.FontSize="12" Height="30" Margin="10,0,0,0" VerticalAlignment="Bottom" />
+        <Grid x:Name="FooterGrid" HorizontalAlignment="Center" TextElement.FontSize="12" Background="White" Height="30" Margin="10,0,0,0" VerticalAlignment="Bottom" />
     </Grid>
 </Window>
