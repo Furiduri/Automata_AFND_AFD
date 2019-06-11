@@ -28,3 +28,7 @@ C:\Users\2212878\GIT\Automata_AFND_AFD\obj\Debug\Automata3.csproj.GenerateResour
 C:\Users\2212878\GIT\Automata_AFND_AFD\obj\Debug\Automata3.csproj.CoreCompileInputs.cache
 C:\Users\2212878\GIT\Automata_AFND_AFD\obj\Debug\Automata3.exe
 C:\Users\2212878\GIT\Automata_AFND_AFD\obj\Debug\Automata3.pdb
+C:\Users\furid\source\repos\Automata3\bin\Debug\Automata3.exe.manifest
+C:\Users\furid\source\repos\Automata3\bin\Debug\Automata3.application
+C:\Users\furid\source\repos\Automata3\obj\Debug\Automata3.exe.manifest
+C:\Users\furid\source\repos\Automata3\obj\Debug\Automata3.application
