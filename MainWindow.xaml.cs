@@ -176,10 +176,17 @@ namespace Automata3
                     Entidades.Transicion transicion = new Transicion();
                     //se guarda el caso inicial
                     string[] EstInit;
-                    EstInit = row[0].ToString().Split(',');
+                    EstInit = row[0].ToString().Replace("->","").Replace("*","").Split(',');
+                    bool isTeminal = IsTerminal(row[0].ToString());
+                    bool isInicial = IsInicial(row[0].ToString());
                     transicion.EstIncio = EstInit;
+                    transicion.flagStart = isInicial;
+                    if (transicion.flagStart && FlagStart == -1)
+                        FlagStart = transicions.Count();
+                    
+                    transicion.flagTerminal = isTeminal;
                     List<Caso> casos = new List<Caso>();
-                    bool isTeminal = true;
+                    
                     for (int i = 0; i < Convert.ToInt32(txtNumCase.Text); i++)
                     {
                         //Creamos nuevo caso
@@ -190,8 +197,7 @@ namespace Automata3
                         //Si se encuentra con mas de un estado final entonces es el incial.
                         if (EstFin.Length > 1)
                         {
-                            transicion.flagStart = true;
-                            FlagStart = transicions.Count();
+                            //transicion.flagStart = true;
                             caso.newEst = true;
                         }
                         //Si tiene estado final entonces no es un estado terminal
@@ -204,13 +210,17 @@ namespace Automata3
                         caso.EstFin = EstFin;
                         casos.Add(caso);
                     }
-                    transicion.flagTerminal = isTeminal;
+                    //transicion.flagTerminal = isTeminal;
                     transicion.casos = casos;
                     transicions.Add(transicion);
                 }
                 //Se guarda el estado incial y se setean las variables de estado terminal
                 if (FlagStart == -1)
+                {
                     MessageBox.Show("Error: No existe estado inical valido!", "Error");
+                    DT.Clear();
+                    return;
+                }
                 else
                 {
                     ListAFDA.Add(transicions[FlagStart]);
@@ -220,6 +230,29 @@ namespace Automata3
             catch (Exception Error)
             {
                 MessageBox.Show("Error: " + Error.Message + "\n" + Error.StackTrace, "Error");
+            }
+        }
+
+        private bool IsInicial(string p)
+        {
+            if (p.IndexOf("->") >= 0)
+            {
+                return true;
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        private bool IsTerminal(string p)
+        {
+            if (p.IndexOf("*") >= 0)
+            {
+                return true;
+            }
+            else {
+                return false;
             }
         }
 
@@ -297,9 +330,12 @@ namespace Automata3
 
         private void GenerarNuevoEstado(List<Transicion> listAFNDA, string[] estFin)
         {
+            //Eliminar estados repetidos          
+            string[] B = estFin.Distinct().ToArray();
+            string estadoNuevo = string.Join(",", B);
+                
             //Verifico si el estado existe
             bool flagExist = false;
-            string estadoNuevo = string.Join(",", estFin);
             foreach (Transicion itmen in ListAFDA)
             {
                 string estadoAct = string.Join(",", itmen.EstIncio);
@@ -344,7 +380,8 @@ namespace Automata3
                         else if (!string.IsNullOrEmpty(estaFin))
                             stfinal += "," + estaFin;
                     }
-                    caso.EstFin = stfinal.Split(',');
+                    string[] stFin = stfinal.Split(',').Distinct().ToArray();
+                    caso.EstFin = stFin;
                     //Verifico si el estado existe
                     flagExist = false;
                     estadoNuevo = stfinal;
@@ -375,8 +412,7 @@ namespace Automata3
         /// Limpia el sistema para introducir un nuevo AFNDA
         /// </summary>
         private void BtnClear_Click(object sender, RoutedEventArgs e)
-        {
-            
+        {            
             System.Diagnostics.Process.Start(Application.ResourceAssembly.Location);
             Application.Current.Shutdown();
         }
@@ -463,6 +499,30 @@ namespace Automata3
                 {                    
                     //Cambias el color
                     e.Row.Background = new SolidColorBrush(Colors.LightSalmon);
+                }
+            }
+        }
+
+        private void btnIsChgParam_Click(object sender, RoutedEventArgs e)
+        {
+            int row = cmbInit.SelectedIndex;
+            if (row >= 0)
+            {
+                DataRowView DR = (DataRowView)GridAFNDA.SelectedItem;
+                switch (btnIsChgParam.Content.ToString())
+                {
+                    case "Inicial":
+                        DR[0] = "->" + DR[0].ToString().Replace("->", "").Replace("*", "");
+                        btnIsChgParam.Content = "Final";
+                        break;
+                    case "Final":
+                        DR[0] = "*" + DR[0].ToString().Replace("->", "").Replace("*", "");
+                        btnIsChgParam.Content = "Normal";
+                        break;
+                    default:
+                        DR[0] = DR[0].ToString().Replace("->","").Replace("*","");
+                        btnIsChgParam.Content = "Inicial";
+                        break;
                 }
             }
         }

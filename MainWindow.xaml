@@ -29,7 +29,8 @@
         
         <Label x:Name="lblStados" Foreground="WhiteSmoke" Visibility="Hidden" Content="" HorizontalAlignment="Center" Margin="10,60,0,0" VerticalAlignment="Top"/>
         
-        <Grid x:Name="gridAdd" HorizontalAlignment="Left" Height="60" Margin="23,94,0,0" VerticalAlignment="Top" Width="749" Background="Gray" Visibility="Hidden">
+        <Grid x:Name="gridAdd" HorizontalAlignment="Center" Height="60" Margin="0,94,0,0" VerticalAlignment="Top" Width="800" Background="Gray" 
+              Visibility="Visible">
             <Label Content="Inico" HorizontalAlignment="Left" Margin="21,15,0,5" FontSize="18" Foreground="White"/>
             <ComboBox SelectionChanged="CmbInit_SelectionChanged" Name="cmbInit" TabIndex="0" Width="100" Height="35" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="74,15,0,0">
             </ComboBox>
@@ -39,8 +40,9 @@
             <Label Content="Destino" HorizontalAlignment="Left" Margin="368,15,0,5" FontSize="18" Foreground="White"/>
             <ComboBox Name="cmbEnd" TabIndex="5" Width="100" Height="35" VerticalAlignment="Top" HorizontalAlignment="Left" Margin="444,15,0,0">
             </ComboBox>
-            <Button Name="btnAddParam" TabIndex="6" Content="Agregar" HorizontalAlignment="Right" Margin="0,15,90,0" Padding="5,5,5,5" VerticalAlignment="Top" FontSize="15" Width="75" Height="35" Background="#FF424249" Foreground="White" Click="BtnAddParam_Click"/>
-            <Button Name="btnEmpiParam" TabIndex="6" Content="Eliminar" HorizontalAlignment="Right" Margin="0,15,10,0" Padding="5,5,5,5" VerticalAlignment="Top" FontSize="15" Width="75" Height="35" Background="#FF424249" Foreground="White" Click="BtnEmpiParam_Click"/>
+            <Button Name="btnIsChgParam" TabIndex="6" Content="Inicial" HorizontalAlignment="Right" Margin="0,15,170,0" Padding="5,5,5,5" VerticalAlignment="Top" FontSize="15" Width="75" Height="35" Background="#FF424249" Foreground="White" Click="btnIsChgParam_Click"/>
+            <Button Name="btnAddParam" TabIndex="7" Content="Agregar" HorizontalAlignment="Right" Margin="0,15,90,0" Padding="5,5,5,5" VerticalAlignment="Top" FontSize="15" Width="75" Height="35" Background="#FF424249" Foreground="White" Click="BtnAddParam_Click"/>
+            <Button Name="btnEmpiParam" TabIndex="8" Content="Eliminar" HorizontalAlignment="Right" Margin="0,15,10,0" Padding="5,5,5,5" VerticalAlignment="Top" FontSize="15" Width="75" Height="35" Background="#FF424249" Foreground="White" Click="BtnEmpiParam_Click"/>
         </Grid>
 
 
